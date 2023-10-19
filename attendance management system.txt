@@ -1,0 +1,106 @@
+import datetime
+#I created a dictionaries to store user data, attendance data, subject data, and period data
+user_data={"abhi": "abhi123"} #user name and password
+attendance_data={}
+subject_data={}
+periods=["Period 1", "Period 2", "Period 3", "Period 4", "Period 5", "Period 6"]   #define six periods
+subjects=["Mathematics", "Physics", "Chemistry", "Database", "Python", "DCCN"]     #define six subjects
+def login():
+    while True:
+        username=input("Enter username: ")
+        password=input("Enter password: ")
+
+        if username in user_data and user_data[username] == password:
+            print("Login successful!!!")
+            return username
+        else:
+            print("Invalid username or password, try again!")
+
+def mark_attendance(student_id, subject, period, status):
+    today=datetime.date.today()
+
+    if student_id not in attendance_data:
+        attendance_data[student_id]={}
+    
+    if subject not in attendance_data[student_id]:
+        attendance_data[student_id][subject]={}
+    
+    if period not in attendance_data[student_id][subject]:
+        attendance_data[student_id][subject][period]=[]
+
+    attendance_data[student_id][subject][period].append((today, status))
+
+def view_attendance(student_id):
+    if student_id in attendance_data:
+        print(f"Attendance records for student {student_id}:")
+        for subject, subject_data in attendance_data[student_id].items():
+            print(f"Subject: {subject}")
+            for period, period_data in subject_data.items():
+                print(f"Period: {period}")
+                for date, status in period_data:
+                    print(f"Date: {date}, Status: {status}")
+    else:
+        print(f"No attendance records found for student {student_id}")
+
+def main():
+    print("Welcome to the attendance management system")
+    username=login()
+
+    while True:
+        print("\n Main Menu:")
+        print("1. Mark Present")
+        print("2. Mark Absent")
+        print("3. View Attendance")
+        print("4. Logout")
+
+        choice=input("Enter your choice: ")
+
+        if choice == "1":
+            student_id = input("Enter student ID: ")
+            print("Available subjects:")
+            for i, subject in enumerate(subjects,start=1):
+                print(f"{i}.{subject}")
+            subject_choice=int(input("Select a subject (1-6): "))-1  #adjust for 0-based indexing
+            if 0 <= subject_choice < len(subjects):
+                subject = subjects[subject_choice]
+                print("Available periods:")
+                for i, period in enumerate(periods, start=1):
+                    print(f"{i}. {period}")
+                period_choice = int(input("Select a period (1-6): "))-1  #adjust for 0-based indexing
+                if 0 <= period_choice < len(periods):
+                    mark_attendance(student_id, subject, periods[period_choice], "Present")
+                    print("Attendance marked as 'Present' for the subject and period.")
+                else:
+                    print("Invalid period choice.")
+            else:
+                print("Invalid subject choice.")
+        elif choice == "2":
+            student_id = input("Enter student ID: ")
+            print("Available subjects:")
+            for i, subject in enumerate(subjects, start=1):
+                print(f"{i}. {subject}")
+            subject_choice = int(input("Select a subject (1-6): "))-1  #adjust for 0-based indexing
+            if 0 <= subject_choice < len(subjects):
+                subject = subjects[subject_choice]
+                print("Available periods:")
+                for i, period in enumerate(periods, start=1):
+                    print(f"{i}. {period}")
+                period_choice = int(input("Select a period (1-6): ")) - 1  #adjust for 0-based indexing
+                if 0 <= period_choice < len(periods):
+                    mark_attendance(student_id, subject, periods[period_choice], "Absent")
+                    print("Attendance marked as 'Absent' for the subject and period.")
+                else:
+                    print("Invalid period choice.")
+            else:
+                print("Invalid subject choice.")
+        elif choice == "3":
+            student_id = input("Enter student ID: ")
+            view_attendance(student_id)
+        elif choice == "4":
+            print("Logout successful.")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
